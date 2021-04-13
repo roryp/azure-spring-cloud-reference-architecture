@@ -26,14 +26,12 @@ git clone https://github.com/azure-samples/spring-petclinic-microservices
 cd spring-petclinic-microservices
 mvn clean package -DskipTests -Denv=cloud
 
-
 # ==== Service and App Instances ====
 api_gateway='api-gateway'
 admin_server='admin-server'
 customers_service='customers-service'
 vets_service='vets-service'
 visits_service='visits-service'
-
 
 # ==== JARS ====
 api_gateway_jar="${project_directory}/source-code/spring-petclinic-microservices/spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.3.6.jar"
@@ -80,9 +78,9 @@ az spring-cloud create \
 az configure --defaults group=${resource_group} location=${region} spring-cloud=${spring_cloud_service}
 az spring-cloud config-server set --config-file application.yml --name ${spring_cloud_service}
 
-az spring-cloud app create --name ${api_gateway} --instance-count 1 --is-public true \
+az spring-cloud app create --name ${api_gateway} --instance-count 1 --assign-endpoint true \
     --memory 2 --jvm-options='-Xms2048m -Xmx2048m'
-az spring-cloud app create --name ${admin_server} --instance-count 1 --is-public true \
+az spring-cloud app create --name ${admin_server} --instance-count 1 --assign-endpoint true \
     --memory 2 --jvm-options='-Xms2048m -Xmx2048m'
 az spring-cloud app create --name ${customers_service} \
     --instance-count 1 --memory 2 --jvm-options='-Xms2048m -Xmx2048m'
@@ -132,7 +130,6 @@ az spring-cloud app deploy --name ${vets_service} \
       mysql_database_name=${mysql_database_name} \
       mysql_server_admin_login_name=${mysql_server_admin_login_name} \
       mysql_server_admin_password=${mysql_server_admin_password}
-      
 
 az spring-cloud app deploy --name ${visits_service} \
 --jar-path ${visits_service_jar} \
