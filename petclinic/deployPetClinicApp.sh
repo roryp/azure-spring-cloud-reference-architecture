@@ -51,6 +51,7 @@ az login
 az account set --subscription ${subscription}
 
 az group create --name ${resource_group} --location ${region}
+
 az mysql server create \
     --resource-group ${resource_group} \
     --name ${mysql_server_name} \
@@ -59,23 +60,28 @@ az mysql server create \
     --storage-size 5120 \
     --admin-user ${mysql_server_admin_name} \
     --admin-password ${mysql_server_admin_password}
+
 az mysql server firewall-rule create \
     --resource-group ${resource_group} \
     --name ${mysql_server_name}-database-allow-local-ip \
     --server ${mysql_server_name} \
     --start-ip-address ${DEVBOX_IP_ADDRESS} \
     --end-ip-address ${DEVBOX_IP_ADDRESS}
+
 az mysql server firewall-rule create \
     --resource-group ${resource_group} \
     --name allAzureIPs \
     --server ${mysql_server_name} \
     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
 az spring-cloud create \
-    -g ${resource_group} \
-    -n ${spring_cloud_service} \
+    --resource-group ${resource_group} \
+    --name ${spring_cloud_service} \
     --sku standard \
-    --enable-java-agent
+    --enable-java-agent true
+
 az configure --defaults group=${resource_group} location=${region} spring-cloud=${spring_cloud_service}
+
 az spring-cloud config-server set --config-file application.yml --name ${spring_cloud_service}
 
 az spring-cloud app create --name ${api_gateway} --instance-count 1 --assign-endpoint true \
