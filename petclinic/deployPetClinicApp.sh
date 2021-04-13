@@ -59,7 +59,8 @@ az mysql server create \
     --sku-name B_Gen5_1 \
     --storage-size 5120 \
     --admin-user ${mysql_server_admin_name} \
-    --admin-password ${mysql_server_admin_password}
+    --admin-password ${mysql_server_admin_password} \
+    --ssl-enforcement Disabled
 
 az mysql server firewall-rule create \
     --resource-group ${resource_group} \
