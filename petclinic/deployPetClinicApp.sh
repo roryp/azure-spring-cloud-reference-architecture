@@ -10,6 +10,8 @@ mysql_server_name='springcloudrpza'
 mysql_server_admin_name='adminrpza'
 mysql_server_admin_password='@zureIsTheDevil01'
 
+az account set --subscription ${subscription}
+
 #Add Required extensions
 az extension add --name spring-cloud
 
@@ -46,9 +48,6 @@ mysql_server_admin_login_name="${mysql_server_admin_name}@${mysql_server_full_na
 mysql_database_name='petclinic'
 
 cd "${project_directory}/source-code/spring-petclinic-microservices"
-
-az login
-az account set --subscription ${subscription}
 
 az group create --name ${resource_group} --location ${region}
 
