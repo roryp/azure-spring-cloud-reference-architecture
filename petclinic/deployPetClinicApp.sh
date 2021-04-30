@@ -9,6 +9,7 @@ spring_cloud_service='springcloudrpza'
 mysql_server_name='springcloudrpza'
 mysql_server_admin_name='adminrpza'
 mysql_server_admin_password='@zureIsTheDevil01'
+log_analytics='springcloudrpza'
 
 az account set --subscription ${subscription}
 
@@ -145,5 +146,48 @@ az spring-cloud app deploy --name ${visits_service} \
       mysql_database_name=${mysql_database_name} \
       mysql_server_admin_login_name=${mysql_server_admin_login_name} \
       mysql_server_admin_password=${mysql_server_admin_password}
+
+az monitor log-analytics workspace create \
+    --workspace-name ${log_analytics} \
+    --resource-group ${resource_group} \
+    --location ${region}           
+                            
+export LOG_ANALYTICS_RESOURCE_ID=$(az monitor log-analytics workspace show \
+    --resource-group ${resource_group} \
+    --workspace-name ${log_analytics} | jq -r '.id')
+
+export WEBAPP_RESOURCE_ID=$(az spring-cloud show --name ${spring_cloud_service} --resource-group ${resource_group} | jq -r '.id')
+
+az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analytics" \
+    --resource ${WEBAPP_RESOURCE_ID} \
+    --workspace ${LOG_ANALYTICS_RESOURCE_ID} \
+    --logs '[
+         {
+           "category": "SystemLogs",
+           "enabled": true,
+           "retentionPolicy": {
+             "enabled": false,
+             "days": 0
+           }
+         },
+         {
+            "category": "ApplicationConsole",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          }        
+       ]' \
+       --metrics '[
+         {
+           "category": "AllMetrics",
+           "enabled": true,
+           "retentionPolicy": {
+             "enabled": false,
+             "days": 0
+           }
+         }
+       ]'
 
 az spring-cloud app show --name ${api_gateway}
