@@ -115,6 +115,10 @@ az mysql server configuration set --name time_zone \
   --resource-group ${resource_group} \
   --server ${mysql_server_name} --value "US/Eastern"
 
+az mysql server configuration set --name query_store_capture_mode \
+  --resource-group ${resource_group} \
+  --server ${mysql_server_name} --value "ALL"
+
 az spring-cloud app deploy --name ${api_gateway} \
     --jar-path ${api_gateway_jar} \
     --jvm-options='-Xms2048m -Xmx2048m -Dspring.profiles.active=mysql'
