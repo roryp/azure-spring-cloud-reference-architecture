@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # ==== Must Cusomize the below for your environment====
-project_directory="/Users/rorypreddy/dev"
-# subscription='296f38ef-7319-4a2b-ab48-2f38cb21966e'
+project_directory=$HOME
 resource_group='springcloudrpza'
 region='westeurope'
 spring_cloud_service='springcloudrpza'
@@ -10,8 +9,6 @@ mysql_server_name='springcloudrpza'
 mysql_server_admin_name='adminrpza'
 mysql_server_admin_password='@zureIsTheDevil01'
 log_analytics='springcloudrpza'
-
-# az account set --subscription ${subscription}
 
 #Add Required extensions
 az extension add --name spring-cloud
