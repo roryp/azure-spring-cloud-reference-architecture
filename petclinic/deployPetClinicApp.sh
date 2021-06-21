@@ -199,6 +199,4 @@ curl ${api_gateway}/api/customer/owners/6/pets/8/
 curl ${api_gateway}/api/vet/vets
 curl ${api_gateway}/api/visit/owners/6/pets/8/visits
 
-az spring-cloud app show --name ${api_gateway} \
-
-
+az spring-cloud app show --name ${api_gateway}
