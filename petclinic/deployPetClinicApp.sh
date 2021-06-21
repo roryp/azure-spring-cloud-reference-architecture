@@ -191,12 +191,15 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
          }
        ]'
 
-curl ${api_gateway}/api/customer/owners
-curl ${api_gateway}/api/customer/owners/4
-curl ${api_gateway}/api/customer/petTypes
-curl ${api_gateway}/api/customer/owners/3/pets/4
-curl ${api_gateway}/api/customer/owners/6/pets/8/
-curl ${api_gateway}/api/vet/vets
-curl ${api_gateway}/api/visit/owners/6/pets/8/visits
+for ((n=0;n<9;n++))
+do
+ curl ${api_gateway}/api/customer/owners
+ curl ${api_gateway}/api/customer/owners/4
+ curl ${api_gateway}/api/customer/petTypes
+ curl ${api_gateway}/api/customer/owners/3/pets/4
+ curl ${api_gateway}/api/customer/owners/6/pets/8/
+ curl ${api_gateway}/api/vet/vets
+ curl ${api_gateway}/api/visit/owners/6/pets/8/visits
+done
 
 az spring-cloud app show --name ${api_gateway}
