@@ -49,6 +49,8 @@ cd "${project_directory}/source-code/spring-petclinic-microservices"
 
 az group create --name ${resource_group} --location ${region}
 
+echo "Creating the MySQL Server ${mysql_server_name}"
+
 az mysql server create \
     --resource-group ${resource_group} \
     --name ${mysql_server_name} \
@@ -71,6 +73,8 @@ az mysql server firewall-rule create \
     --name allAzureIPs \
     --server ${mysql_server_name} \
     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
+echo "Creating the Spring Cloud ${spring_cloud_service}"
 
 az spring-cloud create \
     --resource-group ${resource_group} \
@@ -116,6 +120,8 @@ az mysql server configuration set --name query_store_capture_mode \
   --resource-group ${resource_group} \
   --server ${mysql_server_name} --value "ALL"
 
+echo "Deploying the Apps to the Spring Cloud"
+
 az spring-cloud app deploy --name ${api_gateway} \
     --jar-path ${api_gateway_jar} \
     --jvm-options='-Xms2048m -Xmx2048m -Dspring.profiles.active=mysql'
@@ -147,6 +153,8 @@ az spring-cloud app deploy --name ${visits_service} \
       mysql_database_name=${mysql_database_name} \
       mysql_server_admin_login_name=${mysql_server_admin_login_name} \
       mysql_server_admin_password=${mysql_server_admin_password}
+
+echo "Creating the log anaytics workspace ${log_analytics}"
 
 az monitor log-analytics workspace create \
     --workspace-name ${log_analytics} \
@@ -191,15 +199,17 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
          }
        ]'
 
-for ((n=0;n<9;n++))
+echo "Testing the deployed services at ${api_gateway}"
+
+for i in `seq 1 10`; 
 do
- curl ${api_gateway}/api/customer/owners
- curl ${api_gateway}/api/customer/owners/4
- curl ${api_gateway}/api/customer/petTypes
- curl ${api_gateway}/api/customer/owners/3/pets/4
- curl ${api_gateway}/api/customer/owners/6/pets/8/
- curl ${api_gateway}/api/vet/vets
- curl ${api_gateway}/api/visit/owners/6/pets/8/visits
+   curl -g ${api_gateway}/api/customer/owners
+   curl -g ${api_gateway}/api/customer/owners/4
+   curl -g ${api_gateway}/api/customer/petTypes
+   curl -g ${api_gateway}/api/customer/owners/3/pets/4
+   curl -g ${api_gateway}/api/customer/owners/6/pets/8/
+   curl -g ${api_gateway}/api/vet/vets
+   curl -g ${api_gateway}/api/visit/owners/6/pets/8/visits
 done
 
 az spring-cloud app show --name ${api_gateway}
