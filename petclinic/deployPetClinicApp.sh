@@ -22,6 +22,8 @@ mkdir source-code
 cd source-code
 
 #Clone GitHub Repo
+echo "Cloning the sample project: https://github.com/azure-samples/spring-petclinic-microservices"
+
 git clone https://github.com/azure-samples/spring-petclinic-microservices
 cd spring-petclinic-microservices
 mvn clean package -DskipTests -Denv=cloud
@@ -47,9 +49,11 @@ mysql_database_name='petclinic'
 
 cd "${project_directory}/source-code/spring-petclinic-microservices"
 
+echo "Creating the Resource Group: ${resource_group} Region: ${region}"
+
 az group create --name ${resource_group} --location ${region}
 
-echo "Creating the MySQL Server ${mysql_server_name}"
+echo "Creating the MySQL Server: ${mysql_server_name}"
 
 az mysql server create \
     --resource-group ${resource_group} \
@@ -74,7 +78,7 @@ az mysql server firewall-rule create \
     --server ${mysql_server_name} \
     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 
-echo "Creating the Spring Cloud ${spring_cloud_service}"
+echo "Creating the Spring Cloud: ${spring_cloud_service}"
 
 az spring-cloud create \
     --resource-group ${resource_group} \
@@ -154,7 +158,7 @@ az spring-cloud app deploy --name ${visits_service} \
       mysql_server_admin_login_name=${mysql_server_admin_login_name} \
       mysql_server_admin_password=${mysql_server_admin_password}
 
-echo "Creating the log anaytics workspace ${log_analytics}"
+echo "Creating the log anaytics workspace: ${log_analytics}"
 
 az monitor log-analytics workspace create \
     --workspace-name ${log_analytics} \
