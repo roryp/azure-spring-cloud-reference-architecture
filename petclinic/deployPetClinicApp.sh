@@ -91,6 +91,8 @@ az configure --defaults group=${resource_group} location=${region} spring-cloud=
 
 az spring-cloud config-server set --config-file application.yml --name ${spring_cloud_service}
 
+echo "Creating the MicroService Apps"
+
 az spring-cloud app create --name ${api_gateway} --instance-count 1 --assign-endpoint true \
     --memory 2 --jvm-options='-Xms2048m -Xmx2048m'
 az spring-cloud app create --name ${admin_server} --instance-count 1 --assign-endpoint true \
@@ -203,7 +205,7 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
          }
        ]'
 
-export GATEWAY_URL=$(az spring-cloud app show --name ${api_gateway} | jq -r '.url')
+export GATEWAY_URL=$(az spring-cloud app show --name ${api_gateway} | jq -r '.properties.url')
 
 echo "Testing the deployed services at ${GATEWAY_URL}"
 
