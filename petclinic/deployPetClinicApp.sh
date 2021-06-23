@@ -22,7 +22,7 @@ mkdir source-code
 cd source-code
 
 #Clone GitHub Repo
-echo "Cloning the sample project: https://github.com/azure-samples/spring-petclinic-microservices"
+echo -e "\nCloning the sample project: https://github.com/azure-samples/spring-petclinic-microservices"
 
 git clone https://github.com/azure-samples/spring-petclinic-microservices
 cd spring-petclinic-microservices
@@ -49,11 +49,11 @@ mysql_database_name='petclinic'
 
 cd "${project_directory}/source-code/spring-petclinic-microservices"
 
-echo "Creating the Resource Group: ${resource_group} Region: ${region}"
+echo -e "\nCreating the Resource Group: ${resource_group} Region: ${region}"
 
 az group create --name ${resource_group} --location ${region}
 
-echo "Creating the MySQL Server: ${mysql_server_name}"
+echo -e "\nCreating the MySQL Server: ${mysql_server_name}"
 
 az mysql server create \
     --resource-group ${resource_group} \
@@ -78,7 +78,7 @@ az mysql server firewall-rule create \
     --server ${mysql_server_name} \
     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 
-echo "Creating the Spring Cloud: ${spring_cloud_service}"
+echo -e "\nCreating the Spring Cloud: ${spring_cloud_service}"
 
 az spring-cloud create \
     --resource-group ${resource_group} \
@@ -91,7 +91,7 @@ az configure --defaults group=${resource_group} location=${region} spring-cloud=
 
 az spring-cloud config-server set --config-file application.yml --name ${spring_cloud_service}
 
-echo "Creating the MicroService Apps"
+echo -e "\nCreating the MicroService Apps"
 
 az spring-cloud app create --name ${api_gateway} --instance-count 1 --assign-endpoint true \
     --memory 2 --jvm-options='-Xms2048m -Xmx2048m'
@@ -126,7 +126,7 @@ az mysql server configuration set --name query_store_capture_mode \
   --resource-group ${resource_group} \
   --server ${mysql_server_name} --value "ALL"
 
-echo "Deploying the Apps to the Spring Cloud"
+echo -e "\nDeploying the Apps to the Spring Cloud"
 
 az spring-cloud app deploy --name ${api_gateway} \
     --jar-path ${api_gateway_jar} \
@@ -160,7 +160,7 @@ az spring-cloud app deploy --name ${visits_service} \
       mysql_server_admin_login_name=${mysql_server_admin_login_name} \
       mysql_server_admin_password=${mysql_server_admin_password}
 
-echo "Creating the log anaytics workspace: ${log_analytics}"
+echo -e "\nCreating the log anaytics workspace: ${log_analytics}"
 
 az monitor log-analytics workspace create \
     --workspace-name ${log_analytics} \
@@ -207,7 +207,7 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
 
 export GATEWAY_URL=$(az spring-cloud app show --name ${api_gateway} | jq -r '.properties.url')
 
-echo "Testing the deployed services at ${GATEWAY_URL}"
+echo -e "\nTesting the deployed services at ${GATEWAY_URL}"
 
 for i in `seq 1 10`; 
 do
@@ -220,4 +220,4 @@ do
    curl -g ${GATEWAY_URL}/api/visit/owners/6/pets/8/visits
 done
 
-echo "Completed testing the deployed services at ${GATEWAY_URL}"
+echo -e "\nCompleted testing the deployed services \n${GATEWAY_URL}"
