@@ -203,17 +203,19 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
          }
        ]'
 
-echo "Testing the deployed services at ${api_gateway}"
+export GATEWAY_URL=$(az spring-cloud app show --name ${api_gateway} | jq -r '.url')
+
+echo "Testing the deployed services at ${GATEWAY_URL}"
 
 for i in `seq 1 10`; 
 do
-   curl -g ${api_gateway}/api/customer/owners
-   curl -g ${api_gateway}/api/customer/owners/4
-   curl -g ${api_gateway}/api/customer/petTypes
-   curl -g ${api_gateway}/api/customer/owners/3/pets/4
-   curl -g ${api_gateway}/api/customer/owners/6/pets/8/
-   curl -g ${api_gateway}/api/vet/vets
-   curl -g ${api_gateway}/api/visit/owners/6/pets/8/visits
+   curl -g ${GATEWAY_URL}/api/customer/owners
+   curl -g ${GATEWAY_URL}/api/customer/owners/4
+   curl -g ${GATEWAY_URL}/api/customer/petTypes
+   curl -g ${GATEWAY_URL}/api/customer/owners/3/pets/4
+   curl -g ${GATEWAY_URL}/api/customer/owners/6/pets/8/
+   curl -g ${GATEWAY_URL}/api/vet/vets
+   curl -g ${GATEWAY_URL}/api/visit/owners/6/pets/8/visits
 done
 
-az spring-cloud app show --name ${api_gateway}
+echo "Completed testing the deployed services at ${GATEWAY_URL}"
