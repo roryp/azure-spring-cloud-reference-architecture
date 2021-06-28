@@ -109,6 +109,26 @@ az mysql server configuration set --name wait_timeout \
  --resource-group ${resource_group} \
  --server ${mysql_server_name} --value 2147483
 
+az mysql server configuration set --name slow_query_log \
+ --resource-group ${resource_group} \
+ --server ${mysql_server_name} --value "ON"
+
+az mysql server configuration set --name audit_log_enabled \
+ --resource-group ${resource_group} \
+ --server ${mysql_server_name} --value "ON"
+
+az mysql server configuration set --name audit_log_events \
+ --resource-group ${resource_group} \
+ --server ${mysql_server_name} --value "ADMIN,CONNECTION,DCL,DDL,DML,DML_NONSELECT,DML_SELECT,GENERAL,TABLE_ACCESS"
+
+az mysql server configuration set --name log_queries_not_using_indexes \
+ --resource-group ${resource_group} \
+ --server ${mysql_server_name} --value "ON"
+
+az mysql server configuration set --name long_query_time \
+ --resource-group ${resource_group} \
+ --server ${mysql_server_name} --value "1"
+
 #mysql Configuration 
 mysql -h"${mysql_server_full_name}" -u"${mysql_server_admin_login_name}" \
      -p"${mysql_server_admin_password}" \
